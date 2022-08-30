@@ -4,7 +4,9 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      # Add parameter here
+      param:
+        type: string
+        default: "param"
     steps:
       - run:
           name: Destroy environments
@@ -17,6 +19,9 @@ commands:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
       # Add parameter here
+      param:
+        type: string
+        default: "param"
     steps:
       - run:
           name: Revert migrations
@@ -70,38 +75,55 @@ jobs:
   test-frontend:
     docker:
       # Docker image here
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Restore from cache
       # Your job code here
+      - run:
+          name: Echo
+          command: echo hello
 
   test-backend:
     docker:
       # Docker image here
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Restore from cache
       # Your job code here
+      - run:
+          name: Echo
+          command: echo hello
 
   scan-frontend:
     docker:
       # Docker image here
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Restore from cache
       # Your job code here
+      - run:
+          name: Echo
+          command: echo hello
 
   scan-backend:
     docker:
       # Docker image here
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Restore from cache
       # Your job code here
+      - run:
+          name: Echo
+          command: echo hello
 
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - run:
@@ -155,6 +177,7 @@ jobs:
   run-migrations:
     docker:
       # Docker image here that supports NodeJS
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - run:
@@ -172,12 +195,14 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS CLI
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - run:
           name: Install dependencies
           command: |
             # your code here
+            exit 1
       - run:
           name: Get backend url
           command: |
@@ -188,11 +213,13 @@ jobs:
           name: Deploy frontend objects
           command: |
             # your code here
+            exit 1
       # Here's where you will add some code to rollback on failure
 
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
@@ -201,53 +228,64 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
+            exit 1
       - run:
           name: Deploy backend
           command: |
             # your code here
+            exit 1
       # Here's where you will add some code to rollback on failure
 
   smoke-test:
     docker:
       # Lightweight Docker image
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - run:
           name: Install dependencies
           command: |
             # your code here
+            exit 1
       - run:
           name: Get backend url
           command: |
             # your code here
+            exit 1
       - run:
           name: Backend smoke test.
           command: |
             # your code here
+            exit 1
       - run:
           name: Frontend smoke test.
           command: |
             # your code here
+            exit 1
       # Here's where you will add some code to rollback on failure
 
   cloudfront-update:
     docker:
       # Docker image here that supports AWS CLI
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - run:
           name: Install dependencies
           command: |
             # your code here
+            exit 1
       - run:
           name: Update cloudfront distribution
           command: |
             # your code here
+            exit 1
       # Here's where you will add some code to rollback on failure
 
 cleanup:
     docker:
       # Docker image here
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - run:
