@@ -118,7 +118,7 @@ jobs:
       - restore_cache:
           keys: [frontend-build]
       - run:
-          name: Front-end test
+          name: Front-end scan
           command: |
              cd frontend
              npm install
@@ -137,11 +137,11 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: Front-end test
+          name: Backend-end scan
           command: |
              cd backend
              npm install
-             npm audit fix --audit-level=critical --force
+             npm audit fix --force
              npm audit --audit-level=critical
       - save_cache:
           paths: [backend/node_modules]
