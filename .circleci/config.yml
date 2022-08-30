@@ -41,27 +41,6 @@ commands:
             fi
 
 jobs:
-  notify:
-    docker:
-      - image: 'cimg/base:stable'
-    steps:
-      - slack/notify:
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a text notification*",
-                      "emoji": true
-                    }
-                  ]
-                }
-              ]
-            }
-          event: always
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -181,7 +160,7 @@ jobs:
           command: |
              cd backend
              npm install
-             npm audit fix --force
+             npm audit fix --audit-level=critical --force
              npm audit --audit-level=critical
       - save_cache:
           paths: [backend/node_modules]
