@@ -20,10 +20,9 @@ commands:
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      # Add parameter here
       param:
         type: string
-        default: "param"
+        default: ""
     steps:
       - run:
           name: Revert migrations
@@ -221,22 +220,34 @@ jobs:
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
-      - image: circleci/node:13.8.0
+      - image: python:3.7-alpine3.11
     steps:
       # Checkout code from git
+      - checkout
       # Add ssh keys with fingerprint
+      - add_ssh_keys:
+          fingerprints: ["4f:6a:41:06:12:fa:cc:0a:bc:ca:16:68:78:c0:33:e4"]
       # attach workspace
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependencies
           command: |
-            # Your code here
-            exit 1
+            apk add --update tar gzip ansible aws-cli
       - run:
           name: Configure server
           command: |
-            # Your code here
-            exit 1
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
+
       # Here's where you will add some code to rollback on failure
+      - destroy-environment:
+          id: "${CIRCLE_WORKFLOW_ID:0:7}"
+
+      - slack/notify:
+          channel: general
+          event: fail
+          template: basic_fail_1
 
   run-migrations:
     docker:
@@ -258,7 +269,6 @@ jobs:
 
   deploy-frontend:
     docker:
-      # Docker image here that supports AWS CLI
       - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
@@ -394,15 +404,22 @@ workflows:
               only: [test-feature-branch]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
+          context: udapeople
       - run-migrations:
           requires: [configure-infrastructure]
+          context: udapeople
       - deploy-frontend:
           requires: [run-migrations]
+          context: udapeople
       - deploy-backend:
           requires: [run-migrations]
+          context: udapeople
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
+          context: udapeople
       - cloudfront-update:
           requires: [smoke-test]
+          context: udapeople
       - cleanup:
           requires: [cloudfront-update]
+          context: udapeople
